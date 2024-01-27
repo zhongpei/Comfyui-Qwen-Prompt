@@ -124,15 +124,16 @@ def install_llama():
         else:
             avx="AVX"
 
-        if gpu:
-            cuda = get_cuda_version()
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "llama-cpp-python", "--no-cache-dir", "--force-reinstall", "--no-deps" , f"--index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/{avx}/{cuda}"])
-        else:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", f"https://github.com/abetlen/llama-cpp-python/releases/download/v{lcpVersion}/llama_cpp_python-{lcpVersion}-{platform_tag}.whl"])
+        #if gpu:
+        #    cuda = get_cuda_version()
+        #    subprocess.check_call([sys.executable, "-m", "pip", "install", "llama-cpp-python", "--no-cache-dir", "--force-reinstall", "--no-deps" , f"--index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/{avx}/{cuda}"])
+        #else:
+        print(f"pip install https://github.com/abetlen/llama-cpp-python/releases/download/v{lcpVersion}/llama_cpp_python-{lcpVersion}-{platform_tag}.whl")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", f"https://github.com/abetlen/llama-cpp-python/releases/download/v{lcpVersion}/llama_cpp_python-{lcpVersion}-{platform_tag}.whl"])
     except Exception as e:
         print(f"Error while installing LLAMA: {e}")
         try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", f"llama_cpp_python={lcpVersion}"])
+            subprocess.check_call([sys.executable, "-m", "pip", "install","--upgrade","--force-reinstall","--no-cache-dir", f"llama_cpp_python={lcpVersion}"])
         except Exception as e:
             print(f"Error while installing LLAMA: {e}")
 
@@ -146,34 +147,6 @@ def check_module(package):
         return True
     except ImportError:
         return False
-import zipfile
-
-
-def downloader(link):
-    print("Downloading dependencies...")
-    response = requests.get(link, stream=True)
-    try:
-        os.makedirs(folder_paths.get_temp_directory())
-    except:
-        pass
-    temp_file = os.path.join(folder_paths.get_temp_directory(), "file.zip")
-    with open(temp_file, "wb") as f:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk: 
-                f.write(chunk) 
-
-    zip_file = zipfile.ZipFile(temp_file) 
-    target_dir = os.path.join(folder_paths.folder_names_and_paths["custom_nodes"][0][0],"ComfyUI-N-Nodes","libs","rifle") # Cartella dove estrarre lo zip
-
-    zip_file.extractall(target_dir) 
-
-
-
-
-
-
-
-
 
 
 

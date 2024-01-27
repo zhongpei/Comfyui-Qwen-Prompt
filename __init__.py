@@ -3,7 +3,7 @@ import importlib.util
 import glob
 import os
 import sys
-from .install import get_ext_dir,check_and_install,downloader
+from .install import get_ext_dir,check_and_install
 import folder_paths
 import traceback
 from .qwen_node import QwenLoaderSimple,QwenSampler
@@ -25,28 +25,15 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
 
 #LLAMA DEPENTENCIES
+check_and_install('packaging')
+check_and_install('py-cpuinfo',"cpuinfo")
+check_and_install('scikit-build',"skbuild")
 check_and_install('typing')
 check_and_install('diskcache')
 check_and_install('llama_cpp')
 
 
-py = get_ext_dir("py")
-files = glob.glob("*.py", root_dir=py, recursive=False)
 
-for file in files:
-    try:
-        name = os.path.splitext(file)[0]
-        spec = importlib.util.spec_from_file_location(name, os.path.join(py, file))
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[name] = module
-        spec.loader.exec_module(module)
-        if hasattr(module, "NODE_CLASS_MAPPINGS") and getattr(module, "NODE_CLASS_MAPPINGS") is not None:
-            print(f"load {module.NODE_CLASS_MAPPINGS}")
-            NODE_CLASS_MAPPINGS.update(module.NODE_CLASS_MAPPINGS)
-            if hasattr(module, "NODE_DISPLAY_NAME_MAPPINGS") and getattr(module, "NODE_DISPLAY_NAME_MAPPINGS") is not None:
-                NODE_DISPLAY_NAME_MAPPINGS.update(module.NODE_DISPLAY_NAME_MAPPINGS)
-    except Exception as e:
-        traceback.print_exc()
 
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
