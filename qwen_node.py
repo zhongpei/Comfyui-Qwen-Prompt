@@ -103,11 +103,8 @@ class QwenSampler:
                 "model": ("CUSTOM", {"default": ""}),
                 "model_path": ("STRING", {"default": "","forceInput": True}),
                 "max_tokens": ("INT", {"default": 77}),
-                "temperature": ("FLOAT", {"default": 0.7, "min": 0.2, "max": 1.0}),
+                "temperature": ("FLOAT", {"default": 0.9, "min": 0.2, "max": 1.0}),
                 "top_p": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 1.0}),
-                "logprobs": ("INT", {"default": 0}),
-                "echo": (["enable", "disable"], {"default": "disable"}),
-                "stop_token": ("STRING", {"default": "STOPTOKEN"}),
                 "frequency_penalty": ("FLOAT", {"default": 0.0}),
                 "presence_penalty": ("FLOAT", {"default": 0.0}),
                 "repeat_penalty": ("FLOAT", {"default": 1.4,"min": 1.1}),
@@ -126,7 +123,7 @@ class QwenSampler:
     FUNCTION = "generate_text"
     CATEGORY = "Qwen"
 
-    def generate_text(self,prompt, max_tokens, temperature, top_p, logprobs, echo, stop_token, frequency_penalty, presence_penalty, repeat_penalty, top_k, tfs_z, model,model_path,print_output,cached,prefix,system_prompt):
+    def generate_text(self,prompt, max_tokens, temperature, top_p, frequency_penalty, presence_penalty, repeat_penalty, top_k, tfs_z, model,model_path,print_output,cached,prefix,system_prompt):
         
         
         if cached == "NO":
@@ -143,6 +140,11 @@ class QwenSampler:
                     max_tokens=max_tokens,
                     top_k=top_k,
                     top_p=top_p,
+                    temperature=temperature,
+                    frequency_penalty=frequency_penalty,
+                    presence_penalty=presence_penalty,
+                    tfs_z=tfs_z,
+                   
             #        stream=True,
                     repeat_penalty=repeat_penalty,
                 stop=["\n"]
