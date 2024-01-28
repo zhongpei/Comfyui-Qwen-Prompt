@@ -6,6 +6,11 @@ https://huggingface.co/hahahafofo/Qwen-1_8B-Stable-Diffusion-Prompt-GGUF/tree/ma
 
 下载ggml-model-q4_0.gguf到models/GPTcheckpoints
 
+```
+export HF_ENDPOINT=https://hf-mirror.com
+huggingface-cli download --resume-download hahahafofo/Qwen-1_8B-Stable-Diffusion-Prompt-GGUF --local-dir GPTcheckpoints
+```
+
 ### 2、安装llama-cpp-python
 
 下载对应版本的whl

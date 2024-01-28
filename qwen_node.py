@@ -54,7 +54,7 @@ class QwenLoaderSimple:
     RETURN_NAMES = ("model", "model_path")
     FUNCTION = "load_gpt_checkpoint"
 
-    CATEGORY = "Qwen/loaders"
+    CATEGORY = "Qwen"
     print()
     def load_gpt_checkpoint(
             self, 
@@ -124,7 +124,7 @@ class QwenSampler:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "generate_text"
-    CATEGORY = "Qwen/Sampling"
+    CATEGORY = "Qwen"
 
     def generate_text(self,prompt, max_tokens, temperature, top_p, logprobs, echo, stop_token, frequency_penalty, presence_penalty, repeat_penalty, top_k, tfs_z, model,model_path,print_output,cached,prefix,system_prompt):
         
@@ -167,15 +167,70 @@ class QwenSampler:
             return {"ui": {"text": " "}, "result": (" ",)}
 
 
+class ShowText:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "text": ("STRING", {"forceInput": True}),
+            },
+            "hidden": {
+                "unique_id": "UNIQUE_ID",
+                "extra_pnginfo": "EXTRA_PNGINFO",
+            },
+        }
+
+    INPUT_IS_LIST = True
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "notify"
+    OUTPUT_NODE = True
+    OUTPUT_IS_LIST = (True,)
+
+    CATEGORY = "Qwen"
+
+    def notify(self, text, unique_id = None, extra_pnginfo=None):
+        if unique_id and extra_pnginfo and "workflow" in extra_pnginfo[0]:
+            workflow = extra_pnginfo[0]["workflow"]
+            node = next((x for x in workflow["nodes"] if str(x["id"]) == unique_id[0]), None)
+            if node:
+                node["widgets_values"] = [text]
+        return {"ui": {"text": text}, "result": (text,)}
+
+class TextBox:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "Text": ("STRING", {
+                    "default": "",
+                    "multiline": True,
+                }),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "get_value"
+    CATEGORY = "Qwen"
+
+    def get_value(self, Text):
+        return (Text,)
 
 
 
 NODE_CLASS_MAPPINGS = {
+    "ShowText": ShowText,
+    "TextBox": TextBox,
     "Qwen Loader Simple": QwenLoaderSimple,
     "QwenSampler": QwenSampler
 }
+
 # A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Qwen Loader Simple": "Qwen Loader Simple",
-    "QwenSampler": "Qwen Text Sampler"
+    "QwenSampler": "Qwen Text Sampler",
+    "ShowText": "Show Text",
+    "TextBox": "Text Box",
 }
